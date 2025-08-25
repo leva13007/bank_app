@@ -5,12 +5,16 @@ import java.util.Map;
 
 public class Bank {
     private final Map<String, BankAccount> accounts = new HashMap<>();
-    public boolean register(String username, String password){
+
+    public boolean register(String username){
         if (accounts.containsKey(username)) {
             System.out.println("Account with this username is exist!");
             return false;
         }
 
+        // generate a new password and provide it to the user!
+        String password = PasswordGenerator.generate(12, true,true, true);
+        System.out.println("User password is: " + password);
         accounts.put(username, new BankAccount(username, password));
         return true;
     }
