@@ -1,105 +1,116 @@
 package org.zloyleva;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
 public class BankCLI {
-  Scanner scanner = new Scanner(System.in);
+  Scanner scanner;
+  PrintStream out;
   BankAccount account = null;
   Bank bank = new Bank(new PasswordGenerator());
 
+  public BankCLI(InputStream in, PrintStream out) {
+    this.scanner = new Scanner(in);
+    this.out = out;
+  }
+
   public void run() {
-    while (true){
+    boolean status = false;
+    while (!status){
       if (account == null) {
         showWelcomeMenu();
         String choice = scanner.nextLine();
-        handleGuestChoice(choice);
+        status = handleGuestChoice(choice);
       } else {
         showAccountMenu();
         String choice = scanner.nextLine();
-        handleAccountChoice(choice);
+        status = handleAccountChoice(choice);
       }
     }
   }
 
   public void showWelcomeMenu() {
-    System.out.println("Welcome to the Bank system!");
-    System.out.println("To operate choose the command below:");
-    System.out.println("1. Register");
-    System.out.println("2. Login");
-    System.out.println("3. Exit");
+    out.println("Welcome to the Bank system!");
+    out.println("To operate choose the command below:");
+    out.println("1. Register");
+    out.println("2. Login");
+    out.println("3. Exit");
   }
 
-  public void handleGuestChoice(String choice){
+  public boolean handleGuestChoice(String choice){
     switch (choice){
       case "1": {
-        System.out.println("Enter user name:");
+        out.println("Enter user name:");
         String username = scanner.nextLine();
 //            System.out.println("Enter password:");
 //            String password = scanner.nextLine();
         boolean status = bank.register(username);
-        System.out.println(status ? "✅ Registration success" : "❌ Registration failed");
+        out.println(status ? "✅ Registration success" : "❌ Registration failed");
       }
-      break;
+      return false;
       case "2": {
-        System.out.println("Enter user name:");
+        out.println("Enter user name:");
         String username = scanner.nextLine();
-        System.out.println("Enter password:");
+        out.println("Enter password:");
         String password = scanner.nextLine();
         account = bank.login(username, password);
-        System.out.println(account != null ? "\n✅ Welcome " + account.getUsername() : "❌ Invalid credentials");
+        out.println(account != null ? "\n✅ Welcome " + account.getUsername() : "❌ Invalid credentials");
 
       }
-      break;
+      return false;
       case "3":
-        System.out.println("Goodbye!");
+        out.println("Goodbye!");
         account = null;
-        break;
+        return true;
       default:
-        System.out.println("\uD83D\uDD34 Invalid command");
+        out.println("\uD83D\uDD34 Invalid command");
+        return true;
     }
   }
 
   public void showAccountMenu(){
-    System.out.println("\nChoose the operation:");
-    System.out.println("1. Show balance");
-    System.out.println("2. Deposit");
-    System.out.println("3. Withdraw");
-    System.out.println("4. Exit");
-    System.out.println("--------");
-    System.out.println("5. Show transactions");
+    out.println("\nChoose the operation:");
+    out.println("1. Show balance");
+    out.println("2. Deposit");
+    out.println("3. Withdraw");
+    out.println("4. Exit");
+    out.println("--------");
+    out.println("5. Show transactions");
   }
 
-  public void handleAccountChoice(String choice){
+  public boolean handleAccountChoice(String choice){
     switch (choice) {
       case "1":
-        System.out.println("Your balance is: " + account.getBalance());
-        break;
+        out.println("Your balance is: " + account.getBalance());
+        return false;
       case "2": {
-        System.out.println("Enter deposit amount: ");
+        out.println("Enter deposit amount: ");
         double amount = Double.parseDouble(scanner.nextLine());
         double deposit = account.deposit(amount);
-        System.out.println("Your deposit amount now: " + deposit);
-        break;
+        out.println("Your deposit amount now: " + deposit);
+        return false;
       }
       case "3": {
-        System.out.println("Enter withdraw amount: ");
+        out.println("Enter withdraw amount: ");
         double amount = Double.parseDouble(scanner.nextLine());
         double deposit = account.withdraw(amount);
-        System.out.println("Your deposit amount now: " + deposit);
-        break;
+        out.println("Your deposit amount now: " + deposit);
+        return false;
       }
       case "4":
-        System.out.println("Goodbye!");
+        out.println("Goodbye!");
         account = null;
-        break;
+        return true;
       case "5":
-        System.out.println("List of transactions for: " + account.getUsername());
+        out.println("List of transactions for: " + account.getUsername());
         List<Transaction> transactions = account.getTransactions();
-        transactions.forEach( (n) -> { System.out.println(n); } ); // () => {}
-        break;
+        transactions.forEach( (n) -> { out.println(n); } ); // () => {}
+        return false;
       default:
-        System.out.println("\uD83D\uDD34 Invalid command");
+        out.println("\uD83D\uDD34 Invalid command");
+        return true;
     }
   }
 }
