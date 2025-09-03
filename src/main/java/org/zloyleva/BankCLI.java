@@ -9,11 +9,13 @@ public class BankCLI {
   Scanner scanner;
   PrintStream out;
   BankAccount account = null;
-  Bank bank = new Bank(new PasswordGenerator());
+  PasswordProvider passwordGenerator;
+  Bank bank;
 
-  public BankCLI(InputStream in, PrintStream out) {
+  public BankCLI(InputStream in, PrintStream out, PasswordProvider passwordGenerator) {
     this.scanner = new Scanner(in);
     this.out = out;
+    bank = new Bank(passwordGenerator, out);
   }
 
   public void run() {

@@ -7,7 +7,7 @@ public class BankApp {
 
   public static void main(String[] args) {
 
-    BankCLI cli = new BankCLI(System.in, System.out);
+    BankCLI cli = new BankCLI(System.in, System.out, new PasswordGenerator());
     cli.run();
   }
 }

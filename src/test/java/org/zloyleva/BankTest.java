@@ -2,20 +2,27 @@ package org.zloyleva;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BankTest {
 
   @Test
   void testRegisterSuccess() {
-    Bank bank = new Bank(new MockPasswordGenerator("1234"));
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(out);
+    Bank bank = new Bank(new MockPasswordGenerator("1234"), ps);
     boolean status = bank.register("user");
     assertTrue(status);
   }
 
   @Test
   void testRegisterFail() {
-    Bank bank = new Bank(new MockPasswordGenerator("1234"));
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(out);
+    Bank bank = new Bank(new MockPasswordGenerator("1234"), ps);
     bank.register("user");
     boolean status = bank.register("user");
     assertFalse(status);
@@ -23,7 +30,9 @@ class BankTest {
 
   @Test
   void testLoginSuccess() {
-    Bank bank = new Bank(new MockPasswordGenerator("1234"));
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(out);
+    Bank bank = new Bank(new MockPasswordGenerator("1234"), ps);
     bank.register("user");
     BankAccount account = bank.login("user", "1234");
     assertNotNull(account);
@@ -31,7 +40,9 @@ class BankTest {
 
   @Test
   void testLoginFail() {
-    Bank bank = new Bank(new MockPasswordGenerator("1234"));
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(out);
+    Bank bank = new Bank(new MockPasswordGenerator("1234"), ps);
     bank.register("user");
     BankAccount account = bank.login("user", "12345");
     assertNull(account);
